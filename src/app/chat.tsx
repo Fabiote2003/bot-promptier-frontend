@@ -67,7 +67,7 @@ export default function Chat() {
     <Card className="w-full max-w-3xl mx-auto h-[80vh] flex flex-col bg-gradient-to-br from-gray-900 to-gray-800 shadow-2xl rounded-xl overflow-hidden border-2 border-cyan-400">
       <CardHeader className="bg-gradient-to-r from-cyan-500 to-blue-500 py-6">
         <CardTitle className="text-center text-white text-3xl font-bold tracking-wider">
-          Conoce más sobre <span className="text-cyan-200 font-extrabold">Promptier.ai</span>
+          Conoce más sobre <span className="text-cyan-200 font-extrabold">Promptior.ai</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-6 space-y-4 overflow-hidden bg-opacity-50 backdrop-blur-sm">
