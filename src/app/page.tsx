@@ -1,4 +1,3 @@
-import { ToastProvider } from "@/components/ui/toast"
 import Chat from "./chat"
 
 export default function Home() {
