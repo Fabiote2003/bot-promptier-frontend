@@ -16,50 +16,38 @@ interface ChatState {
   messages: Message[]
 }
 
-function SubmitButton() {
-  const { pending } = useFormStatus()
+function SubmitButton({ show }: { show: boolean }) {
+  const { pending } = useFormStatus();
+
   return (
     <Button
       type="submit"
-      disabled={pending}
-      className="bg-gradient-to-r cursor-pointer from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50"
+      disabled={pending || !show}
+      className="bg-gradient-to-r cursor-pointer from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50 whitespace-nowrap"
     >
-      <Send className="h-5 w-5 mr-2" />
-      Enviar
+      {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5 mr-2" />}
+      {pending ? "Enviando..." : "Enviar"}
     </Button>
   )
 }
 
-function ProcessingIndicator() {
-  return (
-    <div className="flex items-center space-x-2 text-gray-400 animate-pulse">
-      <Loader2 className="h-4 w-4 animate-spin" />
-      <span>Procesando respuesta...</span>
-    </div>
-  )
-}
-
 export default function Chat() {
-  const { pending } = useFormStatus()
-  console.log(pending);
   const initialState: ChatState = { messages: [] }
   const [state, formAction] = useActionState(sendMessage, initialState)
-  const [isProcessing, setIsProcessing] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  const [inputValue, setInputValue] = useState("")
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-  console.log(isProcessing);
   useEffect(() => {
     scrollToBottom()
+    setInputValue("");
   }, [state.messages])
 
   const handleSubmit = async (formData: FormData) => {
-    setIsProcessing(true)
     await formAction(formData)
-    setIsProcessing(false)
     formRef.current?.reset()
   }
 
@@ -98,7 +86,6 @@ export default function Chat() {
               </div>
             </div>
           ))}
-          {pending && <ProcessingIndicator />}
           <div ref={messagesEndRef} />
         </div>
         <form ref={formRef} action={handleSubmit} className="flex gap-2 pt-4 border-t border-gray-700">
@@ -106,8 +93,10 @@ export default function Chat() {
             name="message"
             placeholder="Escribe tu mensaje aquí..."
             className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-cyan-400"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
           />
-          <SubmitButton />
+          <SubmitButton show={inputValue.trim().length > 0} />
         </form>
       </CardContent>
     </Card>
